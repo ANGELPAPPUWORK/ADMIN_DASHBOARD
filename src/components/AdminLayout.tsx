@@ -117,7 +117,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
                 <div className="user-avatar">{getUserInitials()}</div>
                 <div className="user-info">
                   <div className="user-name">
-                    Admin User
+                    {user?.first_name || user?.username} {user?.last_name}
                   </div>
                   <div className="user-role">admin</div>
                 </div>

@@ -56,406 +56,132 @@ const AdminDashboard: React.FC = () => {
     fetchDashboardData();
   }, []);
 
-  const formatNumber = (num: number) => {
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1) + 'k';
-    }
-    return num.toString();
-  };
-
-  const getStatusBadge = (status: string) => {
-    const statusMap: { [key: string]: string } = {
-      'active': 'active',
-      'processing': 'processing',
-      'success': 'success',
-      'failed': 'failed',
-      'suspended': 'suspended',
-      'pending': 'processing'
-    };
-    return statusMap[status] || 'neutral';
-  };
-
-  if (loading) {
-    return (
-      <AdminLayout title="Intelligence Dashboard">
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          height: '400px',
-          flexDirection: 'column',
-          gap: '1rem'
-        }}>
+  return (
+    <AdminLayout title="Dashboard">
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
           <div className="loading-spinner"></div>
-          <div style={{ color: 'var(--text-muted)' }}>Loading dashboard data...</div>
+          <div className="text-lg" style={{ marginLeft: '1rem', color: 'var(--text-muted)' }}>Loading dashboard data...</div>
         </div>
-      </AdminLayout>
-    );
-  }
-
-  if (error) {
-    return (
-      <AdminLayout title="Intelligence Dashboard">
-        <div style={{
-          background: 'rgba(239, 68, 68, 0.1)',
-          border: '1px solid rgba(239, 68, 68, 0.2)',
-          color: 'var(--secondary-color)',
-          padding: '1rem',
-          borderRadius: '0.5rem',
-          textAlign: 'center'
-        }}>
+      ) : error ? (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
           {error}
         </div>
-      </AdminLayout>
-    );
-  }
-
-  return (
-    <AdminLayout title="Intelligence Dashboard">
-      <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ 
-          fontSize: '2rem', 
-          fontWeight: '700', 
-          color: 'var(--text-primary)',
-          margin: '0 0 0.5rem 0'
-        }}>
-          Intelligence Dashboard
-        </h1>
-        <p style={{ 
-          color: 'var(--text-muted)', 
-          margin: 0,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '1rem'
-        }}>
-          Real-time overview of system operations
-          <span style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            fontSize: '0.875rem',
-            color: 'var(--primary-color)'
-          }}>
-            Last Updated: Jul 14, 2025 01:32
-            <div style={{
-              width: '0.5rem',
-              height: '0.5rem',
-              backgroundColor: 'var(--primary-color)',
-              borderRadius: '50%'
-            }}></div>
-          </span>
-        </p>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="dashboard-grid">
-        <div className="stat-card">
-          <div className="stat-header">
-            <div className="stat-title">Total Officers</div>
-            <div className="stat-icon users">👥</div>
-          </div>
-          <div className="stat-value">{stats.totalUsers}</div>
-          <div className="stat-change positive">+12% from last month</div>
-        </div>
-        
-        <div className="stat-card">
-          <div className="stat-header">
-            <div className="stat-title">Active Officers</div>
-            <div className="stat-icon shield">🛡️</div>
-          </div>
-          <div className="stat-value">{stats.activeUsers}</div>
-          <div className="stat-change positive">91% online rate</div>
-        </div>
-        
-        <div className="stat-card">
-          <div className="stat-header">
-            <div className="stat-title">Queries Today</div>
-            <div className="stat-icon search">🔍</div>
-          </div>
-          <div className="stat-value">1247</div>
-          <div className="stat-change positive">+8% from yesterday</div>
-        </div>
-        
-        <div className="stat-card">
-          <div className="stat-header">
-            <div className="stat-title">Success Rate</div>
-            <div className="stat-icon trending">📈</div>
-          </div>
-          <div className="stat-value">95%</div>
-          <div className="stat-change positive">95.3% accuracy</div>
-        </div>
-        
-        <div className="stat-card">
-          <div className="stat-header">
-            <div className="stat-title">Credits Used</div>
-            <div className="stat-icon credit">💳</div>
-          </div>
-          <div className="stat-value">{formatNumber(stats.totalCredits)}</div>
-          <div className="stat-change positive">₹48,760 revenue</div>
-        </div>
-        
-        <div className="stat-card">
-          <div className="stat-header">
-            <div className="stat-title">Avg Response Time</div>
-            <div className="stat-icon clock">⏱️</div>
-          </div>
-          <div className="stat-value">1.8s</div>
-          <div className="stat-change positive">15% faster</div>
-        </div>
-        
-        <div className="stat-card">
-          <div className="stat-header">
-            <div className="stat-title">Active APIs</div>
-            <div className="stat-icon activity">📡</div>
-          </div>
-          <div className="stat-value">12</div>
-          <div className="stat-change positive">All operational</div>
-        </div>
-        
-        <div className="stat-card">
-          <div className="stat-header">
-            <div className="stat-title">System Status</div>
-            <div className="stat-icon zap">⚡</div>
-          </div>
-          <div className="stat-value">Optimal</div>
-          <div className="stat-change positive">99.9% uptime</div>
-        </div>
-      </div>
-
-      {/* Bottom Section */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-        {/* Recent Officers */}
-        <div className="section-card">
-          <div className="section-header">
-            <div className="section-title">
-              👥 Recent Officers
+      ) : (
+        <div className="space-y-6">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="stat-card">
+              <div className="stat-header">
+                <div className="stat-label">Total Officers</div>
+                <div className="stat-icon users">👥</div>
+              </div>
+              <div className="stat-value">{stats.totalUsers}</div>
+              <div className="stat-change positive">+12% from last month</div>
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-header">
+                <div className="stat-label">Active Officers</div>
+                <div className="stat-icon shield">🛡️</div>
+              </div>
+              <div className="stat-value">{stats.activeUsers}</div>
+              <div className="stat-change positive">91% online rate</div>
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-header">
+                <div className="stat-label">Total Credits</div>
+                <div className="stat-icon credit">💳</div>
+              </div>
+              <div className="stat-value">{stats.totalCredits}</div>
+              <div className="stat-change positive">₹48,760 revenue</div>
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-header">
+                <div className="stat-label">Pending Requests</div>
+                <div className="stat-icon clock">⏱️</div>
+              </div>
+              <div className="stat-value">{stats.pendingRequests}</div>
+              {stats.pendingRequests > 0 && (
+                <button 
+                  onClick={() => navigate('/admin/manual-requests')}
+                  className="mt-2 btn-primary text-sm"
+                >
+                  View Requests
+                </button>
+              )}
             </div>
           </div>
-          <div className="section-content">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                padding: '0.75rem',
-                backgroundColor: 'var(--bg-primary)',
-                borderRadius: '0.5rem',
-                border: '1px solid var(--border-color)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{
-                    width: '2.5rem',
-                    height: '2.5rem',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontWeight: '600'
-                  }}>
-                    RK
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
-                      Inspector Ramesh Kumar
-                    </div>
-                    <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                      +91 9791103607
-                    </div>
-                  </div>
-                </div>
-                <span className="status-badge active">Active</span>
-              </div>
-              
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                padding: '0.75rem',
-                backgroundColor: 'var(--bg-primary)',
-                borderRadius: '0.5rem',
-                border: '1px solid var(--border-color)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{
-                    width: '2.5rem',
-                    height: '2.5rem',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #10b981, #047857)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontWeight: '600'
-                  }}>
-                    PS
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
-                      ASI Priya Sharma
-                    </div>
-                    <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                      +91 9876543210
-                    </div>
-                  </div>
-                </div>
-                <span className="status-badge active">Active</span>
-              </div>
-              
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                padding: '0.75rem',
-                backgroundColor: 'var(--bg-primary)',
-                borderRadius: '0.5rem',
-                border: '1px solid var(--border-color)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <div style={{
-                    width: '2.5rem',
-                    height: '2.5rem',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'white',
-                    fontWeight: '600'
-                  }}>
-                    RP
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
-                      SI Rajesh Patel
-                    </div>
-                    <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                      +91 9123456789
-                    </div>
-                  </div>
-                </div>
-                <span className="status-badge suspended">Suspended</span>
-              </div>
+          
+          {/* Recent Activity */}
+          <div className="dashboard-card">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="card-title">Recent Activity</h3>
             </div>
-          </div>
-        </div>
-
-        {/* Live Requests */}
-        <div className="section-card">
-          <div className="section-header">
-            <div className="section-title">
-              📡 Live Requests
-            </div>
-          </div>
-          <div className="section-content">
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                padding: '0.75rem',
-                backgroundColor: 'var(--bg-primary)',
-                borderRadius: '0.5rem',
-                border: '1px solid var(--border-color)'
-              }}>
-                <div>
-                  <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
-                    +91 9791103607 <span style={{ 
-                      background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                      color: 'white',
-                      padding: '0.125rem 0.5rem',
-                      borderRadius: '0.25rem',
-                      fontSize: '0.75rem',
-                      fontWeight: '600'
-                    }}>PRO</span>
-                  </div>
-                  <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                    Phone Credit History
-                  </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                    2025-06-28 16:25
-                  </div>
-                </div>
-                <span className="status-badge processing">Processing</span>
-              </div>
-              
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                padding: '0.75rem',
-                backgroundColor: 'var(--bg-primary)',
-                borderRadius: '0.5rem',
-                border: '1px solid var(--border-color)'
-              }}>
-                <div>
-                  <div style={{ fontWeight: '600', color: 'var(--text-primary)' }}>
-                    +91 9876543210 <span style={{ 
-                      background: 'linear-gradient(135deg, #06b6d4, #0891b2)',
-                      color: 'white',
-                      padding: '0.125rem 0.5rem',
-                      borderRadius: '0.25rem',
-                      fontSize: '0.75rem',
-                      fontWeight: '600'
-                    }}>BASIC</span>
-                  </div>
-                  <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-                    Social Media Profile
-                  </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                    2025-06-28 16:24
-                  </div>
-                </div>
-                <span className="status-badge success">Success</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Recent Activity Table */}
-      {recentLogs.length > 0 && (
-        <div className="section-card" style={{ marginTop: '1.5rem' }}>
-          <div className="section-header">
-            <div className="section-title">
-              📊 Recent Activity
-            </div>
-            <button 
-              onClick={() => navigate('/admin/logs')}
-              className="btn-secondary"
-              style={{ fontSize: '0.875rem' }}
-            >
-              View All Logs
-            </button>
-          </div>
-          <div style={{ overflowX: 'auto' }}>
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>User</th>
-                  <th>Action</th>
-                  <th>Details</th>
-                  <th>Status</th>
-                  <th>Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentLogs.map((log, index) => (
-                  <tr key={index}>
-                    <td style={{ fontWeight: '600' }}>{log.user}</td>
-                    <td>{log.action}</td>
-                    <td style={{ maxWidth: '200px' }}>{log.details}</td>
-                    <td>
-                      <span className={`status-badge ${getStatusBadge(log.status)}`}>
-                        {log.status}
-                      </span>
-                    </td>
-                    <td style={{ fontSize: '0.875rem' }}>{log.timestamp}</td>
+            <div className="overflow-x-auto">
+              <table className="data-table min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      User
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Command
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Query
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Credits
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Date
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {recentLogs.length > 0 ? (
+                    recentLogs.map((log) => (
+                      <tr key={log.id}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {log.username}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {log.command}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {log.query.length > 30 ? `${log.query.substring(0, 30)}...` : log.query}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {log.credits_used}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {new Date(log.created_at).toLocaleString()}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+                        No recent activity
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            {recentLogs.length > 0 && (
+              <div className="px-6 py-4 border-t border-gray-200">
+                <button 
+                  onClick={() => navigate('/admin/logs')}
+                  className="btn-secondary text-sm"
+                >
+                  View All Logs
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
