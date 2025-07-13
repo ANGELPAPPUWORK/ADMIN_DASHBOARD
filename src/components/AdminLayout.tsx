@@ -11,7 +11,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const location = useLocation();
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     // Apply theme class to document
@@ -39,18 +39,17 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
   };
 
   const navigationItems = [
-    { path: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
+    { path: '/admin/dashboard', label: 'Dashboard', icon: '⭕' },
     { path: '/admin/users', label: 'Officers', icon: '👥' },
-    { path: '/admin/api-modules', label: 'Registrations', icon: '📝' },
+    { path: '/admin/api-modules', label: 'Registrations', icon: '👥' },
     { path: '/admin/rate-plans', label: 'Query History', icon: '🔍' },
     { path: '/admin/logs', label: 'Credits & Billing', icon: '💳' },
     { path: '/admin/manual-requests', label: 'API Management', icon: '⚙️' },
-    { path: '/admin/broadcasts', label: 'Live Requests', icon: '📡' },
+    { path: '/admin/broadcasts', label: 'Live Requests', icon: '📈' },
   ];
 
   return (
     <div className="admin-layout">
-      <link rel="stylesheet" href="/src/styles/admin.css" />
       
       {/* Sidebar */}
       <div className="admin-sidebar">
@@ -101,7 +100,6 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
         <header className="admin-header">
           <div className="header-left">
             <h1 className="header-title">Admin Control Panel</h1>
-            <p className="header-subtitle">Real-time overview of system operations</p>
           </div>
           
           <div className="header-right">
@@ -119,7 +117,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
                 <div className="user-avatar">{getUserInitials()}</div>
                 <div className="user-info">
                   <div className="user-name">
-                    {user?.first_name || user?.username} {user?.last_name}
+                    Admin User
                   </div>
                   <div className="user-role">admin</div>
                 </div>
